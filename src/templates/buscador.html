@@ -1,0 +1,28 @@
+{%extends 'base.html'%} {%block body%}
+
+<div class="content-section animated fadeInUp" style="margin-top: 10%">
+    <form method="POST" action="" enctype='multipart/form-data'>
+        {{form.hidden_tag()}}
+        <fieldset class="form-group">
+            <legend class="mb-4"></legend>{{form.carrito.label(class="form-control-label")}}</legend>
+            <div class="form-group">
+                {% if
+          form.carrito.errors %} {{ form.carrito(class="form-control
+          form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.carrito.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %} {{ form.carrito(class="form-control form-control-lg") }} {%
+          endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{form.submit(class = "btn btn-outline-info")}}
+        </div>
+    </form>
+</div>
+
+
+{%endblock%}
