@@ -14,62 +14,59 @@ def home():
         carrito = tabla_carritos.find_one({'carrito_id': form.carrito.data})
         if carrito:
             session['carrito_id'] = form.carrito.data
+            print(session['carrito_id'])
             return redirect(url_for('buscar_carrito'))
     
     return render_template('buscador.html', form = form)
 
 @app.route('/carritos', methods = ['POST'])
 def crear_carritos():
-    if 'carrito_id' not in session:
-        carrito_id = secrets.token_hex(6)
-        print(carrito_id)
-        session['carrito_id'] = carrito_id
+    lista = request.get_data().decode("utf-8").split(',')
+    carrito_id = lista[1]
+    producto_id = lista[0]
+    print(carrito_id)
+    carrito = tabla_carritos.find_one({'carrito_id': carrito_id})
+    producto = tabla_productos.find_one({'codigo': producto_id})
+    if not(carrito):
         carrito = {
-                    'carrito_id': carrito_id,
-                    'productos': [],
-                    'cantidades': []
+                'carrito_id': carrito_id,
+                'productos': [producto['codigo']],
+                'objetos':[producto],
+                'cantidades': [1]
 
-                    }
+                }
         tabla_carritos.insert_one(carrito)
-
-    producto_id = request.get_data().decode("utf-8")
-    producto = tabla_productos.find({'codigo': producto_id})
-    carrito = tabla_carritos.find_one({'carrito_id': session['carrito_id']})
-    if carrito:
+    else:
         productos = carrito['productos']
         cantidades = carrito['cantidades']
-
+        objetos = carrito['objetos']
         if producto['codigo'] in productos:
             index = productos.index(producto_id)
             cantidades[index] += 1
         else:
             productos.append(producto_id)
             cantidades.append(1)
+            objetos.append(producto)
+
         cambios = {
                     'productos': productos,
+                    'objetos': objetos,
                     'cantidades': cantidades
                     }
         tabla_carritos.update_one(
-                                    {'carrito_id': session['carrito_id']}, 
+                                    {'carrito_id': carrito_id}, 
                                     {'$set': cambios}
                                     )
-    else:
-        session.clear()
-        return redirect(url_for('crear_carritos'))
 
-    return jsonify({'status': 'ok',
-                    'carrito': session['carrito']
-                    })
-@app.route('/carritos', methods = ['GET'])
+    return jsonify({'status': 'ok'})
+@app.route('/carritos/', methods = ['GET'])
 def buscar_carrito():
     final = []
     carrito = tabla_carritos.find_one({'carrito_id': session['carrito_id']})
-    productos = carrito['productos']
+    productos = carrito['objetos']
     cantidades = carrito['cantidades']
-    for indice, producto in enumerate(productos):
-        elemento = (producto, cantidades[indice])
-        final.append(elemento)
-    return render_template('carrito.html', productos = final)
+
+    return render_template('carrito.html', productos = productos)
 
 @app.route('/producto', methods = ['GET', 'POST'])
 def crear_producto():
