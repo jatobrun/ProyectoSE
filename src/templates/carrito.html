@@ -5,14 +5,14 @@
 <article class="media content-section animated bounceInDown fast">
 
     <img class='rounded-circle article-img'
-        src="{{ url_for('static', filename='Productos/'+producto['imagen']) }}">
+        src="{{ url_for('static', filename='Productos/'+producto[0]['imagen']) }}">
     <div class="media-body">
         <div class="article-metadata">
             
-            Nombre: <a class="mr-2" href="#">{{ producto.nombre}}</a>
-            Fabricante: <a class="mr-2" href="#">{{producto.fabricante}}</a></br>
-            Precio: <a class="mr-2" href="#">{{producto.precio}}</a></br>
-        
+            Nombre: <a class="mr-2" href="#">{{ producto[0].nombre}}</a>
+            Fabricante: <a class="mr-2" href="#">{{producto[0].fabricante}}</a></br>
+            Precio: <a class="mr-2" href="#">{{producto[0].precio}}</a></br>
+            cantidadad: <a class="mr-2" href="#">{{producto[1]}}</a></br>
         </div>
         <div class="article-metadata">
             <button type="button" class='btn btn-danger btn-sm mt-1 mb-1 ml-1 p-2' data-toggle="modal"

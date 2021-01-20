@@ -65,8 +65,10 @@ def buscar_carrito():
     carrito = tabla_carritos.find_one({'carrito_id': session['carrito_id']})
     productos = carrito['objetos']
     cantidades = carrito['cantidades']
-
-    return render_template('carrito.html', productos = productos)
+    for indice, producto in enumerate(productos):
+        elemento = (producto, cantidades[indice])
+        final.append(elemento)
+    return render_template('carrito.html', productos = final)
 
 @app.route('/producto', methods = ['GET', 'POST'])
 def crear_producto():
