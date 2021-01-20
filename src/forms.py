@@ -4,12 +4,12 @@ from wtforms.validators import DataRequired, ValidationError
 from src import tabla_carritos, tabla_productos
 
 class BuscadorForm(FlaskForm):
-    carrito = IntegerField('Carrito', validators=[
+    carrito = StringField('Carrito', validators=[
                            DataRequired(message='Ingrese un numero de carrito porfavor')])
     submit = SubmitField('Consultar')
     
     def validar_carrito(self, carrito):
-        carrito = tabla_carritos.find_one({'carrito': carrito.data})
+        carrito = tabla_carritos.find_one({'carrito_id': carrito.data})
         if not(carrito):
             raise ValidationError(
                 'Este carrito no existe. Porfavor ingrese bien el codigo')
