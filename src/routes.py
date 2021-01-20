@@ -16,7 +16,7 @@ def home():
             session['carrito_id'] = form.carrito.data
             print(session['carrito_id'])
             return redirect(url_for('buscar_carrito'))
-    
+        flash('No existe el carrito', 'warning')
     return render_template('buscador.html', form = form)
 
 @app.route('/carritos', methods = ['POST'])
@@ -106,7 +106,7 @@ def pago():
     form = PagoForm()
     if form.validate_on_submit():
         flash('Gracias por su compra')
-        return redirect(url_for('home'))
+        return redirect(url_for('logout'))
     return render_template('pago.html', form = form)
 
 @app.route("/logout")
